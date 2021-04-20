@@ -6,10 +6,13 @@ fn = 'C:/Users/Florence/Documents/IRD/VIA/1.nc'  # path to netcdf file
 
 ds = nc.Dataset(fn)  # read as netcdf dataset
 
-la
 
-#
-# ds['prcp']
+total_precip = ds['tp']
+
+precip_1 = [total_precip[i][1][1] for i in range(len(total_precip))]
+print(max(precip_1))
+
+
 #
 # prcp = ds['prcp'][:]  # get data for variable
 #
