@@ -1,16 +1,58 @@
 
-
+import matplotlib.pyplot as plt
 import netCDF4 as nc
+import csv
 
 fn = 'C:/Users/Florence/Documents/IRD/VIA/1.nc'  # path to netcdf file
-
 ds = nc.Dataset(fn)  # read as netcdf dataset
-
-
 total_precip = ds['tp']
+lat = 7
+lon = 18
+# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
 
-precip_1 = [total_precip[i][1][1] for i in range(len(total_precip))]
-print(max(precip_1))
+for i in range(lat):
+    for j in range(lon):
+        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
+        with open('C:/Users/Florence/Documents/IRD/VIA/DATA1/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
+            filewriter = csv.writer(csvfile, delimiter=';')
+            filewriter.writerow(['total_precip'])
+            for x in precip:
+                filewriter.writerow(x)
+
+fn = 'C:/Users/Florence/Documents/IRD/VIA/2.nc'  # path to netcdf file
+ds = nc.Dataset(fn)  # read as netcdf dataset
+total_precip = ds['tp']
+lat = 7
+lon = 18
+# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
+
+for i in range(lat):
+    for j in range(lon):
+        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
+        with open('C:/Users/Florence/Documents/IRD/VIA/DATA2/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
+            filewriter = csv.writer(csvfile, delimiter=';')
+            filewriter.writerow(['total_precip'])
+            for x in precip:
+                filewriter.writerow(x)
+
+fn = 'C:/Users/Florence/Documents/IRD/VIA/3.nc'  # path to netcdf file
+ds = nc.Dataset(fn)  # read as netcdf dataset
+total_precip = ds['tp']
+lat = 7
+lon = 18
+# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
+
+for i in range(lat):
+    for j in range(lon):
+        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
+        with open('C:/Users/Florence/Documents/IRD/VIA/DATA3/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
+            filewriter = csv.writer(csvfile, delimiter=';')
+            filewriter.writerow(['total_precip'])
+            for x in precip:
+                filewriter.writerow(x)
+# plt.plot(precip_1)
+# plt.show()
+# print(max(precip_1))
 
 
 #

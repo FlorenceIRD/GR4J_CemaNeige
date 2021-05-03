@@ -168,7 +168,7 @@ def pos_X(X): #permet d'avoir que des paramètres positifs
 
 constr = {'type' : 'ineq', 'fun' : pos_X}
 
-x0=np.array([200, 1, 110, 2]) #valeur de départ
+x0=np.array([400, 1, 110, 2]) #valeur de départ
 
 x_calc = scipy.optimize.minimize(Minimisation_GR4J_CemaNeige, x0, constraints = constr, options={'maxiter' : 100, 'disp' : True} )
 print(x_calc)
