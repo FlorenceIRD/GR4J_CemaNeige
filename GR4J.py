@@ -102,7 +102,7 @@ def gr4j(LInputs: int, InputsPrecip: list, InputsPE: list, Param: list, StateSta
         Outputs.append(MISC)
         QOutputs.append(Q)
     # model states at the end of the run
-    StateEnd = [None] * (3 * NH + 7)  # TODO : recompter
+    StateEnd = [None] * (3 * NH + 7)
     StateEnd[0] = St[0]
     StateEnd[1] = St[1]
     for k in range(NH):
@@ -145,6 +145,7 @@ def MOD_GR4J(St: list, StUH1: list, StUH2: list, OrdUH1: list, OrdUH2,
     B: float = 0.9
     stored_val: float = (9 / 4) ** 4
     A = Param[0]
+
     # Interception and production store
     if P1 <= E:
         EN = E - P1

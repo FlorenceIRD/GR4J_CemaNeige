@@ -79,7 +79,8 @@ def DataAltiExtrapolation_Valery(DatesR, Precip, PrecipScale=True, TempMean=None
         for iLayer in range(NLayers):
             ##If_layer_elevation_smaller_than_Zthreshold
             if ZLayers[iLayer] <= Zthreshold:
-                prcp = [float(Precip[i] * math.exp(TabGradP[i] * (ZLayers[iLayer] - ZInputs))) for i in range(len(Precip))]
+                prcp = [float(Precip[i] * math.exp(TabGradP[i] * (ZLayers[iLayer] - ZInputs)))
+                        for i in range(len(Precip))]
             ##If_layer_elevation_greater_than_Zthreshold
             else:
                 ##If_inputs_median_elevation_smaller_than_Zthreshold
@@ -90,7 +91,8 @@ def DataAltiExtrapolation_Valery(DatesR, Precip, PrecipScale=True, TempMean=None
                     prcp = float(Precip)
             LayerPrecip_mat.append(prcp)
         if PrecipScale :
-            rowMeans= [sum(LayerPrecip_mat[i])/len(LayerPrecip_mat[i]) for i in range(len(LayerPrecip_mat))]
+            rowMeans= [sum(LayerPrecip_mat[i])/len(LayerPrecip_mat[i])
+                       for i in range(len(LayerPrecip_mat))]
             for iLayer in range(NLayers):
                 for j in range(len(LayerPrecip_mat[iLayer])):
                     LayerPrecip_mat[iLayer][j] = LayerPrecip_mat[iLayer][j] / rowMeans[iLayer] * Precip[j]
@@ -120,7 +122,8 @@ def DataAltiExtrapolation_Valery(DatesR, Precip, PrecipScale=True, TempMean=None
             ##On_each_elevation_layer...
 
             for iLayer in range(NLayers):
-                LayerTempMean.append([TempMean[i] + (ZInputs - ZLayers[iLayer]) *GradT/100 for i in range(len(TempMean))])
+                LayerTempMean.append([TempMean[i] + (ZInputs - ZLayers[iLayer]) *GradT/100
+                                      for i in range(len(TempMean))])
             if (TempMin is not None and TempMax is not None ):
                 LayerTempMin[iLayer] = TempMin + (ZInputs - ZLayers[iLayer]) * abs(GradT) / 100
                 LayerTempMax[iLayer] = TempMax + (ZInputs - ZLayers[iLayer]) * abs(GradT) / 100

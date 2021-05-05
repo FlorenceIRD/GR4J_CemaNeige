@@ -36,39 +36,6 @@
 
 """Subroutine that runs the CemaNeige model at each time step, and stores the final states"""
 
-"""retour data alti valery :
-{'LayerPrecip': LayerPrecip, 'LayerTempMean': LayerTempMean, 'LayerTempMin': LayerTempMin,
-        'LayerTempMax': LayerTempMax, 'LayerFracSolidPrecip': LayerFracSolidPrecip, 'ZLayers': ZLayers}
-
-
-ParamCemaNeige = Param[(len(Param) - 1 - 2 * int(IsHyst)):len(Param)]
-NParamMod = int(len(Param) - (2 + 2 * int(IsHyst)))
-ParamMod = Param[1:NParamMod]
-NLayers = len(inputsModel.LayerPrecip)
-NStatesMod = int(len(runOptions.IniStates) - NStates * NLayers)
-ExportDatesR = "DatesR" in runOptions.Outputs_Sim
-ExportStateEnd = "StateEnd" in runOptions.Outputs_Sim
-for iLayer in range(NLayers):
-    StateStartCemaNeige = [runOptions.IniStates[iLayer + 7 + 20 + 40],
-                           runOptions.IniStates[iLayer + NLayers + 7 + 20 + 40],
-                           runOptions.IniStates[iLayer + 2 * NLayers + 7 + 20 + 40],
-                           runOptions.IniStates[iLayer + 3 * NLayers + 7 + 20 + 40]]
-
-    RESULTS = CemaNeige.cemaneige(LInputs=LInputSeries, InputsPrecip=inputsModel.LayerPrecip[[iLayer]][IndPeriod1],
-                                  InputsFracSolidPrecip=inputsModel.LayerFracSolidPrecip[[iLayer]][IndPeriod1],
-                                  InputsTemp=inputsModel.LayerTemp[[iLayer]][IndPeriod1],
-                                  MeanAnSolidPrecip=runOptions.MeanAnSolidPrecip[iLayer],
-                                  Param=ParamCemaNeige,
-                                  StateStart=StateStartCemaNeige,
-                                  isHyst=False)
-    RESULTS_Outputs = RESULTS[0]
-    RESULTS_StateEnd = RESULTS[1]
-
-    ## Data storage
-    CemaNeigeLayers[iLayer] = [RESULTS_Outputs[IndPeriod2, i] for i in range(
-        len(RESULTS_Outputs))]  # lapply(seq_len(RESULTS.NOutputs), function(i) RESULTS.Outputs[IndPeriod2, i])
-    CemaNeigeLayers[iLayer].insert(0, fortranOutputs_CN[
-        IndOutputsCemaNeige])  # todo : supprimer ? on ajoute le nom en tete de liste"""
 
 
 def cemaneige(LInputs: int, InputsPrecip: list, InputsFracSolidPrecip: list, InputsTemp: list,
