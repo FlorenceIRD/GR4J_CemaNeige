@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 
+
 # dates_debut = [1981, 1984, 1987, 1990, 1993, 1996, 1999, 2002, 2005, 2008, 2011, 2014, 2017]
 # dates_fin = [x+2 for x in dates_debut]
 dates_debut = [1990]
@@ -82,10 +83,8 @@ for annees in range(len(dates_debut)): #decompte des années
     PE_BV.append(PE_BV_annees)
     SKT_BV.append(SKT_BV_annees)
 
-
-
-    with open('C:/Users\Florence\Documents\IRD\VIA/'
-              '6_Code\GR4JCemaneige_light\GR4JCemaneigeLight\Basin1.csv') as csvfile:
+    with open('C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/BasinTest.csv', 'w',
+              newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=';')
         filewriter.writerow(['T'])
         for x in SKT_BV:
