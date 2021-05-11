@@ -24,13 +24,13 @@ for annees in range(len(dates_debut)): #decompte des années
          + str(dates_fin[annees]) + '.nc'  # path to netcdf file
     ds = nc.Dataset(fn)  # read as netcdf dataset
 
-    time = ds['time']
+    # time = ds['time']
     total_precip = ds['tp']
-    potential_evaporation = ds['pev']
-    skin_temp = ds['skt']
+    # potential_evaporation = ds['pev']
+    # skin_temp = ds['skt']
     TP_BV_annees = [0.] * int(len(total_precip)/24)
-    PE_BV_annees = [0.] * int(len(potential_evaporation)/24)
-    SKT_BV_annees = [0.] * int((len(skin_temp))/24)
+    # PE_BV_annees = [0.] * int(len(potential_evaporation)/24)
+    # SKT_BV_annees = [0.] * int((len(skin_temp))/24)
 
     surface_tot = sum(surfaces)
     for index in range(len(zones)):
@@ -50,53 +50,55 @@ for annees in range(len(dates_debut)): #decompte des années
                 TP_zone.append(TP_jour*surface_zone/(24*surface_tot))
                 h=0
 
-        h = 0  # compteur d'heure
-        PE_jour = 0  # initialisation somme
-        PE_zone = []
+        # h = 0  # compteur d'heure
+        # PE_jour = 0  # initialisation somme
+        # PE_zone = []
+        #
+        # for k in range(len(potential_evaporation)) :
+        #     if type(potential_evaporation[k][i][j]) is np.float64:
+        #         PE_jour += potential_evaporation[k][i][j]
+        #     h+=1
+        #     if h==24 :
+        #         PE_zone.append(PE_jour*surface_zone/surface_tot)
+        #         h=0
 
-        for k in range(len(potential_evaporation)) :
-            if type(potential_evaporation[k][i][j]) is np.float64:
-                PE_jour += potential_evaporation[k][i][j]
-            h+=1
-            if h==24 :
-                PE_zone.append(PE_jour*surface_zone/surface_tot)
-                h=0
+        # h = 0  # compteur d'heure
+        # SKT_jour = 0  # initialisation somme
+        # SKT_zone = []
+        #
+        # for k in range(len(skin_temp)):
+        #     if type(skin_temp[k][i][j]) is np.float64 :
+        #         SKT_jour += skin_temp[k][i][j]
+        #     h += 1
+        #     if h == 24:
+        #         SKT_zone.append(SKT_jour * surface_zone/(24*surface_tot))
+        #         h = 0
 
-        h = 0  # compteur d'heure
-        SKT_jour = 0  # initialisation somme
-        SKT_zone = []
-
-        for k in range(len(skin_temp)):
-            if type(skin_temp[k][i][j]) is np.float64 :
-                SKT_jour += skin_temp[k][i][j]
-            h += 1
-            if h == 24:
-                SKT_zone.append(SKT_jour * surface_zone/(24*surface_tot))
-                h = 0
-
-        TP_BV_annees = [TP_zone[i] + TP_BV[i] for i in range(len(TP_BV))]
-        PE_BV_annees= [PE_zone[i] + PE_BV[i] for i in range(len(PE_BV))]
-        SKT_BV_annees= [SKT_zone[i] + SKT_BV[i] for i in range(len(SKT_BV))]
+        TP_BV_annees = [TP_zone[i] + TP_BV_annees[i] for i in range(len(TP_BV_annees))]
+        # PE_BV_annees= [PE_zone[i] + PE_BV_annees[i] for i in range(len(PE_BV_annees))]
+        # SKT_BV_annees= [SKT_zone[i] + SKT_BV_annees[i] for i in range(len(SKT_BV_annees))]
 
 
-    TP_BV.append(TP_BV_annees)
-    PE_BV.append(PE_BV_annees)
-    SKT_BV.append(SKT_BV_annees)
+    TP_BV+=TP_BV_annees
+    # PE_BV+=PE_BV_annees
+    # SKT_BV+=SKT_BV_annees
 
-    with open('C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/BasinTest.csv', 'w',
+
+
+    with open('C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/Precip.csv', 'w',
               newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=';')
-        filewriter.writerow(['T'])
-        for x in SKT_BV:
-            filewriter.writerow(x)
-
-        filewriter.writerow(['E'])
-        for x in PE_BV:
-            filewriter.writerow(x)
+        # filewriter.writerow(['T'])
+        # for x in SKT_BV:
+        #     filewriter.writerow([x])
+        #
+        # filewriter.writerow(['E'])
+        # for x in PE_BV:
+        #     filewriter.writerow([x])
 
         filewriter.writerow(['P'])
         for x in TP_BV:
-            filewriter.writerow(x)
+             filewriter.writerow([x])
 
     print(0)
 
