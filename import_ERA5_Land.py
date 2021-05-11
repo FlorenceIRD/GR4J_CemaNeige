@@ -3,53 +3,50 @@ import matplotlib.pyplot as plt
 import netCDF4 as nc
 import csv
 
-fn = 'C:/Users/Florence/Documents/IRD/VIA/1.nc'  # path to netcdf file
-ds = nc.Dataset(fn)  # read as netcdf dataset
-total_precip = ds['tp']
-lat = 7
-lon = 18
-# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
 
-for i in range(lat):
-    for j in range(lon):
-        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
-        with open('C:/Users/Florence/Documents/IRD/VIA/DATA1/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=';')
-            filewriter.writerow(['total_precip'])
-            for x in precip:
-                filewriter.writerow(x)
+dates_debut = [1981, 1984, 1987, 1990, 1993, 1996, 1999, 2002, 2005, 2008, 2011, 2014, 2017]
+dates_fin = [x+2 for x in dates_debut]
 
-fn = 'C:/Users/Florence/Documents/IRD/VIA/2.nc'  # path to netcdf file
-ds = nc.Dataset(fn)  # read as netcdf dataset
-total_precip = ds['tp']
-lat = 7
-lon = 18
-# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
+for k in range(len(dates_debut)):
+    fn = 'C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/ERA5-LAND_' + str(dates_debut[k]) + '-'\
+         + str(dates_fin[k]) + '.nc'  # path to netcdf file
+    ds = nc.Dataset(fn)  # read as netcdf dataset
+    # # total_precip = ds['tp']
+    # potential_evaporation = ds['pev']
+    skin_temp = ds['skt']
+    lat = 7
+    lon = 11
+    # precip = [total_precip[k][0][0] for k in range(len(total_precip))]
 
-for i in range(lat):
-    for j in range(lon):
-        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
-        with open('C:/Users/Florence/Documents/IRD/VIA/DATA2/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=';')
-            filewriter.writerow(['total_precip'])
-            for x in precip:
-                filewriter.writerow(x)
+    for i in range(lat):
+        for j in range(lon):
+            # precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
+            # with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/potential_evaporation'
+            #           '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_'  + str(i) +
+            #           '_' + str(j)+'.csv', 'w', newline='') as csvfile:
+            #     filewriter = csv.writer(csvfile, delimiter=';')
+            #     filewriter.writerow(['total_precip'])
+            #     for x in precip:
+            #         filewriter.writerow(x)
 
-fn = 'C:/Users/Florence/Documents/IRD/VIA/3.nc'  # path to netcdf file
-ds = nc.Dataset(fn)  # read as netcdf dataset
-total_precip = ds['tp']
-lat = 7
-lon = 18
-# precip = [total_precip[k][0][0] for k in range(len(total_precip))]
+            # pe = [[potential_evaporation[k][i][j]] for k in range(len(potential_evaporation))]
+            # with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/potential_evaporation'
+            #           '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_' + str(i) +
+            #           '_' + str(j) + '.csv', 'w', newline='') as csvfile:
+            #     filewriter = csv.writer(csvfile, delimiter=';')
+            #     filewriter.writerow(['potential_evaporation'])
+            #     for x in pe:
+            #         filewriter.writerow(x)
 
-for i in range(lat):
-    for j in range(lon):
-        precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
-        with open('C:/Users/Florence/Documents/IRD/VIA/DATA3/' + str(i) + '_' + str(j)+'.csv', 'w', newline='') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=';')
-            filewriter.writerow(['total_precip'])
-            for x in precip:
-                filewriter.writerow(x)
+            skt = [[skin_temp[k][i][j]] for k in range(len(skin_temp))]
+            with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/skin_temp'
+                      '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_' + str(i) +
+                      '_' + str(j) + '.csv', 'w', newline='') as csvfile:
+                filewriter = csv.writer(csvfile, delimiter=';')
+                filewriter.writerow(['skin_temp'])
+                for x in skt:
+                    filewriter.writerow(x)
+
 # plt.plot(precip_1)
 # plt.show()
 # print(max(precip_1))
