@@ -1,3 +1,4 @@
+from typing import List, Any, Union
 
 import matplotlib.pyplot as plt
 import netCDF4 as nc
@@ -12,128 +13,83 @@ dates_fin = [x+2 for x in dates_debut]
 
 #region IMPORT DES DONNEES DEPUIS DOSSIER
 #--------------------------------------------------------------------
-# for k in range(len(dates_debut)):
-for k in dates_debut:
 
-    url = 'C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/ERA5-LAND_' + str(dates_debut[k]) + '-'\
-         + str(dates_fin[k]) + '.nc'  # path to netcdf file
-    ds = nc.Dataset(url) # read as netcdf dataset
+dataset_daily_mm = pd.DataFrame({'P': [], 'T': [], 'E': [], 'day' : []})
+
+# endregion -----------------------------------------
+# region ZONES ETUDIEES
+# ---------------------------------------------------
+
+zones = [[10, 0], [9, 2], [8, 1], [8, 2], [7, 0], [7, 1],
+         [7, 2], [6, 3], [5, 2], [4, 1], [4, 2], [3, 2], [3, 3], [3, 3], [2, 2], [2, 4], [1, 3], [1, 5],
+         [0, 2], [0, 5], [5, 1], [7, 0], [7, 0], [7, 4], [7, 6], [5, 0], [3, 0], [2, 2], [1, 2]]
+index = -1
+while index<len(zones):
+    index = index + 1
+    # while index<len(zones):
+    j, i = zones[index][0], zones[index][1]
+    print("import_zones " + str(time.process_time()) + " zone " + str(i) + "_"+ str(j))
+
+    for k in range(len(dates_debut)):
+
+        url = 'C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/ERA5-LAND_' + str(dates_debut[k]) + '-'\
+             + str(dates_fin[k]) + '.nc'  # path to netcdf file
+        ds = nc.Dataset(url) # read as netcdf dataset
 
 
-    #endregion -----------------------------------------
-    #region CHOIX DU BV
-    #---------------------------------------------------
+        #endregion -----------------------------------------
+        #region CREATION DE DATAFRAME JOURNALIERS
+        #---------------------------------------------------
+        total_precipitation = ds['tp']
+        potential_evaporation = ds['pev']
+        skin_temperature = ds['skt']
+        day = ds['time']
+        # time = ds['time']
+        n_jour = int(len(total_precipitation) / 24)
+        dataset_daily_mm_annee = pd.DataFrame({'P' : [0.] * n_jour,
+                                               'T' : [0.] * n_jour,
+                                               'E' : [0.] * n_jour,
+                                               'day' : [0.]*n_jour
+                                               })
 
-    decoupe_BV = pd.read_csv('suface_zones_bv1.csv', header=0)
-    zones = decoupe_BV['fichier'].tolist()
-    surfaces = decoupe_BV['area'].tolist()
-    surface_tot = sum(surfaces)
+        # print("import " + str(time.process_time())) # environ 3 sec, à raccourcir
 
-    #endregion -----------------------------------------
-    #region CREATION DE DATAFRAME JOURNALIERS
-    #---------------------------------------------------
-    total_precipitation = ds['tp']
-    potential_evaporation = ds['pev']
-    skin_temperature = ds['skt']
-    # time = ds['time']
-    n_jour = int(len(total_precipitation) / 24)
+        dataset_daily_mm_annee['day'] = pd.Series(day[jour*24]/24 for jour in range(n_jour))
 
-    dataset_daily_mm = pd.DataFrame({'P' : [0.] * n_jour,
-                                  'T' : [0.] * n_jour,
-                                  'E' : [0.] * n_jour,
-                                  })
-
-    print("import " + str(time.process_time())) # environ 3 sec, à raccourcir
-    index = 0
-    while index<len(zones):
-        z = zones[index]
-        i, j = int(z.split(sep="_")[0]), int(z.split(sep="_")[1])
-        surface_zone = surfaces[index]
-        print("import_zones " + str(time.process_time()))
         # PASSAGE PLUIES JOURNALIERES
         #---------------------------------------------------
 
-        dataset_daily_mm['P'] = pd.Series(sum(total_precipitation[jour*24+h][i][j] for h in range(23))* surface_zone/(surface_tot) * 1000 for jour in range(n_jour))
+        dataset_daily_mm_annee['P'] = pd.Series(sum(total_precipitation[jour * 24 + h][i][j] for h in range(23))
+                                                * 1000 for jour in range(n_jour))
 
-        #region version lente
-        # TP_jour = 0 #initialisation somme
-        # for jour in range(int(len(total_precipitation)/24)) :
-        #     for h in range(24):
-        #         if type(total_precipitation[jour*24+h][i][j]) is np.float64 :
-        #             TP_jour += total_precipitation[jour*24+h][i][j]
-        #     #ponderation par zone et conversion en mm
-        #     dataset_daily_mm['P'][jour] += TP_jour * surface_zone/(surface_tot) * 1000
-        #
-        #     #remise des compteurs à zero pour le jour suivant
-        # endregion    TP_jour = 0
         print("TP" + str(time.process_time()))
-
 
         # PASSAGE EVAPOTRANSPIRATIONS JOURNALIERES
         #---------------------------------------------------
-        dataset_daily_mm['E'] = pd.Series(
-            sum(potential_evaporation[jour * 24 + h][i][j] for h in range(23)) * surface_zone / (surface_tot) /24 for
-            jour in range(n_jour))
+        dataset_daily_mm_annee['E'] = pd.Series( sum(potential_evaporation[jour * 24 + h][i][j] for h in range(23))/24 for   jour in range(n_jour))
 
-        #region version lente
-    #     PE_jour = 0  # initialisation somme
-    #     for jour in range(int(len(potential_evaporation) / 24)):
-    #         for h in range(24):
-    #             if type(potential_evaporation[jour * 24 + h][i][j]) is np.float64:
-    #                 PE_jour += potential_evaporation[jour * 24 + h][i][j]
-    #
-    #         # ponderation par zone et moyennage journalier
-    #         dataset_daily_mm['E'][jour] += PE_jour * (surface_zone / surface_tot) / 24
-    #         # remise des compteurs à zero pour le jour suivant
-    #         PE_jour = 0
-    # endregion
         print("PE" + str(time.process_time()))
-
 
         # PASSAGE TEMPERATURE JOURNALIERES
         #---------------------------------------------------
-        dataset_daily_mm['T'] = pd.Series(
-            (sum(skin_temperature[jour * 24 + h][i][j] for h in range(23)) *
-                surface_zone / (surface_tot) / 24) for jour in range(n_jour))
-    #region version lente
-    #     h = 0  # compteur d'heure
-    #     SKT_jour = 0  # initialisation somme
-    #     for jour in range(int(len(skin_temperature) / 24)):
-    #         for h in range(24):
-    #             if type(skin_temperature[jour * 24 + h][i][j]) is np.float64:
-    #                 SKT_jour += skin_temperature[jour * 24 + h][i][j]
-    #         # ponderation par zone, moyennage journalier, conversion en degrés Celsius
-    #         dataset_daily_mm['T'][jour] += SKT_jour * surface_zone / (surface_tot) / 24 - 273.15
-    #         # remise des compteurs à zero pour le jour suivant
-    #         SKT_jour = 0
-    # endregion
+        dataset_daily_mm_annee['T'] = pd.Series((sum(skin_temperature[jour * 24 + h][i][j] for h in range(23))/24) - 273.15 for jour in range(n_jour))
+
         print("SKT" + str(time.process_time()))
-        index += 1
 
-    plt.subplot(3, 1, 1)
-    plt.plot([i for i in range(len(dataset_daily_mm['P']))], dataset_daily_mm['P'])
-    plt.subplot(3, 1, 2)
-    plt.plot([i for i in range(len(dataset_daily_mm['E']))], dataset_daily_mm['E'])
-    plt.subplot(3, 1, 3)
-    plt.plot([i for i in range(len(dataset_daily_mm['T']))], dataset_daily_mm['T'])
-    plt.show()
+        dataset_daily_mm = pd.concat([dataset_daily_mm, dataset_daily_mm_annee])
+        dataset_daily_mm.to_csv(
+            'C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/zone_' + str(i) + '_' + str(
+                j) + '.csv', sep=';')
 
-    # filewriter = csv.writer(csvfile, delimiter=';')
-    # # filewriter.writerow(['T'])
-    # # for x in SKT_BV:
-    # #     filewriter.writerow([x])
+# plt.subplot(3, 1, 1)
+# plt.plot([i for i in range(len(dataset_daily_mm['P']))], dataset_daily_mm['P'])
+# plt.subplot(3, 1, 2)
+# plt.plot([i for i in range(len(dataset_daily_mm['E']))], dataset_daily_mm['E'])
+# plt.subplot(3, 1, 3)
+# plt.plot([i for i in range(len(dataset_daily_mm['T']))], dataset_daily_mm['T'])
+# plt.show()
 
 
-#
-# with open('C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/ET.csv', 'w',
-#           newline='') as csvfile:
-#     filewriter.writerow(['E'])
-#     for x in PE_BV:
-#         filewriter.writerow([x])
-#     #
-#     # filewriter.writerow(['P'])
-#     # for x in TP_BV:
-#     #      filewriter.writerow([x])
 
 
 
@@ -170,20 +126,12 @@ for k in dates_debut:
 #         filewriter.writerow(x)
 #endregion
 
-# plt.plot(precip_1)
-# plt.show()
-# print(max(precip_1))
-
-
-#
-# prcp = ds['prcp'][:]  # get data for variable
-#
-# print(prcp[0, 4000:4005, 4000:4005])  # print slice of data
-#
 
 
 
 
+
+# region API
 # import cdsapi
 # import pygrib
 # import matplotlib.pyplot as plt

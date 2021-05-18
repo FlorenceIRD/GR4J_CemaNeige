@@ -25,10 +25,12 @@ HypsoData = HypsoData['alti'].values.astype(float).tolist()
 # data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
 data_pluie = pd.read_csv('Precip2.csv', header=0)
 data_dates_debits= pd.read_csv('Debits_BV1.csv', header = 0, sep = '\t')
+data_temp = pd.read_csv('temp2.csv', header = 0)
+data_evap = pd.read_csv('ET2.csv', header = 0)
 
 Precip = data_pluie['P'].values.astype(float)
-PotEvap = data['E'].values.astype(float)
-TempMean = data['T'].values.astype(float)
+PotEvap = data_evap['E'].values.astype(float)
+TempMean = data_temp['T'].values.astype(float)
 QObs = data_dates_debits['Debit'].values.astype(float)
 
 data_num = pd.DataFrame({
@@ -45,8 +47,16 @@ PotEvap = data_num['E'].tolist()
 TempMean = data_num['T'].tolist()
 QObs = data_num['Qmm'].tolist()
 
-debut = DatesR.index("1990-01-01")
-fin = DatesR.index("1992-12-31")
+Precip = [x*24*1000 for x in Precip] #TODO refaire l'import et vérifier
+TempMean=[x-273.15 for x in TempMean]
+PotEvap = [x*1000 for x in PotEvap]
+
+plt.plot(DatesR, TempMean)
+plt.plot(DatesR, )
+
+
+debut = DatesR.index("01/01/1990")
+fin = DatesR.index("31/12/1992")
 debutCemaneige = debut-365
 
 Ind_Run = range(debut, fin)
@@ -208,10 +218,10 @@ def Minimisation_GR4J_CemaNeige(X):
 
 ## contraintes
 
-bounds = scipy.optimize.Bounds([0, 0, 0, 0, 0, 0], [1000, 1000,1000,1000,1000,1000])
+bounds = scipy.optimize.Bounds([0, -100, 0, 0, 0, 0], [1000, 1000,1000,1000,1000,1000])
 
 
-x0=np.array([230, 1.012237, 83,   2,  0.5,  2]) #valeur de départ
+x0=np.array([680.28, -2, 110,   2,  0.5,  2]) #valeur de départ
 
 x_calc = scipy.optimize.minimize(Minimisation_GR4J_CemaNeige,
                                  x0,
