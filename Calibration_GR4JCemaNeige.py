@@ -21,15 +21,29 @@ HypsoData = HypsoData['alti'].values.astype(float).tolist()
 # ,1957.8,1965.0,1976.0,1987.0,1999.0,2013.0,2027.0,2047.0,2058.0,2078.0,2097.0,2117.0,2146.0,2177.0,2220.6,2263.6,2539.0]
 
 
-# data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
-data_pluie = pd.read_csv('Precip2.csv', header=0)
-data_dates_debits= pd.read_csv('Debits_BV1.csv', header = 0, sep = '\t')
-data_temp = pd.read_csv('temp2.csv', header = 0)
-data_evap = pd.read_csv('ET2.csv', header = 0)
+decoupe_BV = pd.read_csv('suface_zones_bv1.csv', header=0)
+zones = decoupe_BV['fichier'].tolist()
+surfaces=  decoupe_BV['area'].tolist()
 
-Precip = data_pluie['P'].values.astype(float)
-PotEvap = data_evap['E'].values.astype(float)
-TempMean = data_temp['T'].values.astype(float)
+
+# data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
+data = pd.DataFrame({'P' : [] ,
+                     'T' : [],
+                     'E' :[] })
+
+for index in range(len(zones)):
+    z = zones[index]
+    j,  i= int(z.split(sep="_")[0]), int(z.split(sep="_")[1])
+    surface_zone = surfaces[index]
+
+    data['P'] = data['P'] + pd.read_csv('zones_' + str(i) + '_' + str(j) + '.csv')['P']
+    data_dates_debits= pd.read_csv('Debits_BV1.csv', header = 0, sep = '\t')
+    data_temp = pd.read_csv('temp2.csv', header = 0)
+    data_evap = pd.read_csv('ET2.csv', header = 0)
+
+Precip = data['P'].values.astype(float)
+PotEvap = data['E'].values.astype(float)
+TempMean = data['T'].values.astype(float)
 QObs = data_dates_debits['Debit'].values.astype(float)
 
 data_num = pd.DataFrame({

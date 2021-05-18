@@ -4,6 +4,8 @@ import math
 
 class ErrorCrit:
     def __init__(self, FUN_CRIT, outputsModel, VarObs, warnings=True, verbose=True):
+        global infini
+        infini= 1000000000000000
         ## ----- Single criterion
         self.VarSim = outputsModel
         self.VarObs = VarObs
@@ -31,13 +33,13 @@ class ErrorCrit:
         ## ErrorCrit
         Emod = 0
         for i in range(len(self.VarSim)):
-            if self.VarObs[i] < 10000000 and self.VarSim[i] < 10000000 :
+            if self.VarObs[i] < infini and self.VarSim[i] < infini :
                 Emod += (self.VarSim[i] - self.VarObs[i])**2
             else :
                 print(self.VarObs[i], self.VarSim[i])
         Eref = 0
         for i in range(len(self.VarObs)):
-            if self.VarObs[i] < 10000000 :
+            if self.VarObs[i] < infini :
                 Eref += (self.VarObs[i] - meanVarObs)**2
             else :
                 print(self.VarObs[i])
@@ -72,25 +74,25 @@ class ErrorCrit:
         ## ErrorCrit
         Emod = 0
         for i in range(len(self.VarSim)):
-            if self.VarObs[i] < 10000000 and self.VarSim[i] < 10000000 :
+            if self.VarObs[i] < infini and self.VarSim[i] < infini :
                 Emod += (math.sqrt(self.VarSim[i]) - math.sqrt(self.VarObs[i]))**2
             else :
                 print(self.VarObs[i], self.VarSim[i])
         Eref = 0
         for i in range(len(self.VarObs)):
-            if self.VarObs[i] < 10000000 :
+            if self.VarObs[i] < infini :
                 Eref += (math.sqrt(self.VarObs[i]) - math.sqrt(meanVarObs))**2
             else :
                 print(self.VarObs[i])
 
         if Eref == 0:
+
             if Emod == 0:
                 Crit = 0
             else :
                 Crit = float ('inf')
         else:
             Crit = (1 - Emod / Eref)
-
 
         ## Output
         OutputsCrit = [Crit]

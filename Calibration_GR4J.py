@@ -5,6 +5,8 @@ import GR4J
 import numpy as np
 import scipy.optimize
 import ErreurCrit
+from scipy.optimize import Bounds
+
 
 ##region Importation des données
 data = pd.read_csv ('BasinL0123001.csv', header=0)
@@ -70,20 +72,18 @@ def Minimisation_GR4J_CemaNeige(X):
 
 # print(Minimisation_GR4J_CemaNeige([257.237556, 1.012237, 88.234673,   2.207958]))
 
-def pos_X(X): #permet d'avoir que des paramètres positifs
-    for x in X :
-        if x < 0 :
-            return -1
-    return 1
-constr = {'type' : 'ineq', 'fun' : pos_X}
 
 
 ##endregion
 
+#contraintes
+bounds = Bounds([0, 0, 0, 0], [+np.inf, +np.inf, +np.inf, +np.inf])
 
-x0=np.array([200, 1, 110, 2]) #valeur de départ
 
-x_calc = scipy.optimize.minimize(Minimisation_GR4J_CemaNeige, x0, constraints = constr)
+#valeur de départ
+x0=np.array([200, 1, 110, 2])
+
+x_calc = scipy.optimize.minimize(Minimisation_GR4J_CemaNeige, x0, bounds = bounds)
 print(x_calc)
 Simulation_GR4J_CemaNeige(x_calc.x)
 
