@@ -75,14 +75,14 @@ for annees in range(len(dates_debut)): #decompte des années
                 SKT_zone.append(SKT_jour * surface_zone/(24*surface_tot))
                 h = 0
         #
-        # TP_BV_annees = [TP_zone[i] + TP_BV_annees[i] for i in range(len(TP_BV_annees))]
-        # PE_BV_annees= [PE_zone[i] + PE_BV_annees[i] for i in range(len(PE_BV_annees))]
-        SKT_BV_annees= [SKT_zone[i] + SKT_BV_annees[i] for i in range(len(SKT_BV_annees))]
+        # TP_BV_annees = [TP_zone[i] + TP_BV[i] for i in range(len(TP_BV))]
+        # PE_BV_annees= [PE_zone[i] + PE_BV[i] for i in range(len(PE_BV))]
+        SKT_BV_annees= [SKT_zone[i] + SKT_BV[i] for i in range(len(SKT_BV))]
 
 
-    # TP_BV = TP_BV_annees + TE_BV
-    # PE_BV = PE_BV_annees + PE_BV
-    SKT_BV = SKT_BV + SKT_BV_annees
+    # TP_BV.append(TP_BV_annees)
+    # PE_BV.append(PE_BV_annees)
+    SKT_BV.append(SKT_BV_annees)
 
     with open('/home/florence/Documents/6_Code/GR4JCemaneigeLight/temp.csv', 'w',
               newline='') as csvfile:
