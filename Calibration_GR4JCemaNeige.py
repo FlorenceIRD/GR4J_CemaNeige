@@ -8,6 +8,7 @@ import ErreurCrit
 import math as math
 import DataAltiExtrapolation_Valery
 import CemaNeige
+import datetime as dt
 
 
 ##region Importation des données
@@ -15,43 +16,58 @@ import CemaNeige
 # data = data[data.Qmm.apply(lambda x: x.isnumeric())]
 HypsoData = pd.read_csv('HypsoDataBV_1.csv', header=0)
 HypsoData = HypsoData['alti'].values.astype(float).tolist()
-# [471.0,656.2,749.4,808.0,868.0,908.0,948.0,991.2,1022.6,1052.0,1075.0,1101.0,1120.4,1147.6,1166.8,1185.0,1210.0,1229.0,1242.0,1259.0,1277.0,1291.0,1305.4,1318.0,1328.0,1340.0,1350.2,1366.4
-# ,1377.0,1389.0,1402.0,1413.0,1424.0,1435.0,1448.8,1460.0,1474.2,1487.4,1498.0,1511.0,1523.0,1538.0,1551.4,1564.0,1573.0,1584.0,1593.0,1603.4,1614.0,1626.0,1636.0,1648.0,1661.4,1672.0,1682.0,1693.0
-# ,1705.0,1715.0,1724.0,1733.0,1742.0,1751.0,1759.0,1768.0,1777.0,1787.0,1795.0,1802.0,1813.0,1822.0,1832.0,1840.0,1849.0,1857.6,1867.0,1874.0,1882.2,1891.0,1899.0,1908.8,1919.0,1931.0,1941.0,1948.0
-# ,1957.8,1965.0,1976.0,1987.0,1999.0,2013.0,2027.0,2047.0,2058.0,2078.0,2097.0,2117.0,2146.0,2177.0,2220.6,2263.6,2539.0]
-
-
 decoupe_BV = pd.read_csv('suface_zones_bv1.csv', header=0)
 zones = decoupe_BV['fichier'].tolist()
 surfaces=  decoupe_BV['area'].tolist()
 
 
-# data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
-data = pd.DataFrame({'P' : [] ,
-                     'T' : [],
-                     'E' :[] })
 
-for index in range(len(zones)):
+# data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
+data = pd.DataFrame({'P' : [0.] * 13572 ,
+                     'T' : [0.] * 13572,
+                     'E' :[0.] * 13572,
+                     'day' :[0.] * 13572})
+
+index = 0
+if index ==0 :
+# for index in range(len(zones)):
     z = zones[index]
     j,  i= int(z.split(sep="_")[0]), int(z.split(sep="_")[1])
     surface_zone = surfaces[index]
+    # pluie = pd.read_csv('zone_' + str(i) + '_' + str(j) + '.csv', sep = ';')['P'][1:].values.astype(float)
+    data['P'] = data['P'] + pd.read_csv('zone_' + str(i) + '_' + str(j) + '.csv', sep = ';')['P'][1:].values.astype(float)
+    data['T'] = pd.read_csv('zone_' + str(i) + '_' + str(j) + '.csv', sep = ';')['T'][1:].values.astype(float)
+    data['E'] = pd.read_csv('zone_' + str(i) + '_' + str(j) + '.csv', sep = ';')['E'][1:].values.astype(float)
+    data['day'] = pd.read_csv('zone_' + str(i) + '_' + str(j) + '.csv', sep=';')['day'][1:].values.astype(float)
 
-    data['P'] = data['P'] + pd.read_csv('zones_' + str(i) + '_' + str(j) + '.csv')['P']
-    data_dates_debits= pd.read_csv('Debits_BV1.csv', header = 0, sep = '\t')
-    data_temp = pd.read_csv('temp2.csv', header = 0)
-    data_evap = pd.read_csv('ET2.csv', header = 0)
+    data_dates_debits = pd.read_csv('Debits_BV1.csv', header=0, sep='\t')
 
-Precip = data['P'].values.astype(float)
-PotEvap = data['E'].values.astype(float)
-TempMean = data['T'].values.astype(float)
-QObs = data_dates_debits['Debit'].values.astype(float)
+# Precip = data['P'].values.astype(float)
+# PotEvap = data['E'].values.astype(float)
+# TempMean = data['T'].values.astype(float)
+# QObs = data_dates_debits['Debit'].values.astype(float)
+#
+# Days_ERA5 = data['day']
+
+Dates_ERA5 = pd.Series(dt.timedelta(date) + dt.date(1900, 1, 1) for date in data['day'])
+# indices = 0
+
+DatesR = data_dates_debits['Date']
+DatesR = DatesR.tolist()
+debut = DatesR.index("01/01/1990")
+fin = DatesR.index("31/12/1992")
+debutCemaneige = debut-365
+Ind_Run = range(debut, fin)
+# IndPeriodCemaneige = range(debutCemaneige, debut)
+IndPeriodCemaneige = Ind_Run
+LInputSeries = len(IndPeriodCemaneige)
 
 data_num = pd.DataFrame({
-    'DatesR' : data_dates_debits['Date'],
-    'P' : Precip,
-    'E' : PotEvap,
-    'T' : TempMean,
-    'Qmm' : QObs })
+    'DatesR' : Dates_ERA5,
+    'P' : data['P'],
+    'E' : data['E'],
+    'T' : data['T'],
+    'Qmm' : data_dates_debits['Debit'].values.astype(float) })
 data_num = data_num.dropna()
 
 DatesR= data_num['DatesR'].tolist()
@@ -60,22 +76,9 @@ PotEvap = data_num['E'].tolist()
 TempMean = data_num['T'].tolist()
 QObs = data_num['Qmm'].tolist()
 
-Precip = [x for x in Precip] #TODO refaire l'import et vérifier
-TempMean=[x for x in TempMean]
-PotEvap = [x for x in PotEvap]
-
 plt.plot(DatesR, TempMean)
-plt.plot(DatesR, )
 
 
-debut = DatesR.index("01/01/1990")
-fin = DatesR.index("31/12/1992")
-debutCemaneige = debut-365
-
-Ind_Run = range(debut, fin)
-# IndPeriodCemaneige = range(debutCemaneige, debut)
-IndPeriodCemaneige = Ind_Run
-LInputSeries = len(IndPeriodCemaneige)
 
 ##endregion
 
