@@ -20,8 +20,7 @@ HypsoData = HypsoData['alti'].values.astype(float).tolist()
 # ,1705.0,1715.0,1724.0,1733.0,1742.0,1751.0,1759.0,1768.0,1777.0,1787.0,1795.0,1802.0,1813.0,1822.0,1832.0,1840.0,1849.0,1857.6,1867.0,1874.0,1882.2,1891.0,1899.0,1908.8,1919.0,1931.0,1941.0,1948.0
 # ,1957.8,1965.0,1976.0,1987.0,1999.0,2013.0,2027.0,2047.0,2058.0,2078.0,2097.0,2117.0,2146.0,2177.0,2220.6,2263.6,2539.0]
 
-#
-#
+
 # data = data.loc[:, ['DatesR', 'P', 'T', 'E', 'Qls', 'Qmm']]
 data_pluie = pd.read_csv('Precip2.csv', header=0)
 data_dates_debits= pd.read_csv('Debits_BV1.csv', header = 0, sep = '\t')
@@ -47,9 +46,9 @@ PotEvap = data_num['E'].tolist()
 TempMean = data_num['T'].tolist()
 QObs = data_num['Qmm'].tolist()
 
-Precip = [x*24*1000 for x in Precip] #TODO refaire l'import et vérifier
-TempMean=[x-273.15 for x in TempMean]
-PotEvap = [x*1000 for x in PotEvap]
+Precip = [x for x in Precip] #TODO refaire l'import et vérifier
+TempMean=[x for x in TempMean]
+PotEvap = [x for x in PotEvap]
 
 plt.plot(DatesR, TempMean)
 plt.plot(DatesR, )
