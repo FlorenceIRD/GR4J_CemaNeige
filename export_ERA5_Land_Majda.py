@@ -89,47 +89,6 @@ while index<len(zones):
 # plt.show()
 
 
-
-
-
-#region export des données brutes en csv
-#    lat = 7
-#     lon = 11
-#for i in range(lat):
-#     for j in range(lon):
-# precip= [[total_precip[k][i][j]] for k in range(len(total_precip))]
-# with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/potential_evaporation'
-#           '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_'  + str(i) +
-#           '_' + str(j)+'.csv', 'w', newline='') as csvfile:
-#     filewriter = csv.writer(csvfile, delimiter=';')
-#     filewriter.writerow(['total_precip'])
-#     for x in precip:
-#         filewriter.writerow(x)
-
-# pe = [[potential_evaporation[k][i][j]] for k in range(len(potential_evaporation))]
-# with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/potential_evaporation'
-#           '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_' + str(i) +
-#           '_' + str(j) + '.csv', 'w', newline='') as csvfile:
-#     filewriter = csv.writer(csvfile, delimiter=';')
-#     filewriter.writerow(['potential_evaporation'])
-#     for x in pe:
-#         filewriter.writerow(x)
-
-# skt = [[skin_temp[k][i][j]] for k in range(len(skin_temp))]
-# with open('C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/skin_temp'
-#           '/ERA5-LAND_' + str(dates_debut[k]) + '-' + str(dates_fin[k]) + '_' + str(i) +
-#           '_' + str(j) + '.csv', 'w', newline='') as csvfile:
-#     filewriter = csv.writer(csvfile, delimiter=';')
-#     filewriter.writerow(['skin_temp'])
-#     for x in skt:
-#         filewriter.writerow(x)
-#endregion
-
-
-
-
-
-
 # region API
 # import cdsapi
 # import pygrib
