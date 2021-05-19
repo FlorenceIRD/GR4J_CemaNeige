@@ -1,7 +1,6 @@
 from typing import List, Any, Union
 
 import matplotlib.pyplot as plt
-import netCDF4 as nc
 import numpy as np
 import csv
 import pandas as pd
@@ -34,7 +33,8 @@ while index<len(zones):
 
         url = 'C:/Users/Florence/Documents/IRD/VIA/Data_ERA5-Land/ERA5-LAND_' + str(dates_debut[k]) + '-'\
              + str(dates_fin[k]) + '.nc'  # path to netcdf file
-        ds = nc.Dataset(url) # read as netcdf dataset
+        df = xarray.open_dataset(url)
+        ds = df.to_dataframe() # read as netcdf dataset
 
 
         #endregion -----------------------------------------
