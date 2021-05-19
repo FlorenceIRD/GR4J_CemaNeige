@@ -22,9 +22,8 @@ dataset_daily_mm = pd.DataFrame({'P': [], 'T': [], 'E': [], 'day' : []})
 zones = [[10, 0], [9, 2], [8, 1], [8, 2], [7, 0], [7, 1],
          [7, 2], [6, 3], [5, 2], [4, 1], [4, 2], [3, 2], [3, 3], [3, 3], [2, 2], [2, 4], [1, 3], [1, 5],
          [0, 2], [0, 5], [5, 1], [7, 0], [7, 0], [7, 4], [7, 6], [5, 0], [3, 0], [2, 2], [1, 2]]
-index = -1
+index = 0
 while index<len(zones):
-    index = index + 1
     # while index<len(zones):
     j, i = zones[index][0], zones[index][1]
     print("import_zones " + str(time.process_time()) + " zone " + str(i) + "_"+ str(j))
@@ -77,9 +76,9 @@ while index<len(zones):
         print("SKT" + str(time.process_time()))
 
         dataset_daily_mm = pd.concat([dataset_daily_mm, dataset_daily_mm_annee])
-        dataset_daily_mm.to_csv(
-            'C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/GR4JCemaneigeLight/zone_' + str(i) + '_' + str(
-                j) + '.csv', sep=';')
+        index = index + 1
+    dataset_daily_mm.to_csv('C:/Users/Florence/Documents/IRD/VIA/6_Code/GR4JCemaneige_light/'
+                            'GR4JCemaneigeLight/zone_' + str(i) + '_' + str(j) + '.csv', sep=';')
 
 # plt.subplot(3, 1, 1)
 # plt.plot([i for i in range(len(dataset_daily_mm['P']))], dataset_daily_mm['P'])
